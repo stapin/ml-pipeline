@@ -9,8 +9,8 @@ stages:
       size: 326611506
     - path: src/prepare.py
       hash: md5
-      md5: c8b0aae3b58187c16b6ec7ea194ebbb7
-      size: 996
+      md5: 29b4801d8016f641e7e68b4c81dd8692
+      size: 981
     params:
       params.yaml:
         prepare.random_state: 42
@@ -18,23 +18,23 @@ stages:
     outs:
     - path: data/prepared/test.csv
       hash: md5
-      md5: bc2389fa1a28755ba0053debedca8343
-      size: 28580147
+      md5: 5dab644f55d8c1e490926bc3b1b316a6
+      size: 28179092
     - path: data/prepared/train.csv
       hash: md5
-      md5: 125a539a81e9389ebbc9419e2d5bc452
-      size: 114112939
+      md5: f28d549e5d0ea77eaa490ffae02fd2f5
+      size: 112508857
   train:
     cmd: python src/train.py
     deps:
     - path: data/prepared/test.csv
       hash: md5
-      md5: bc2389fa1a28755ba0053debedca8343
-      size: 28580147
+      md5: 5dab644f55d8c1e490926bc3b1b316a6
+      size: 28179092
     - path: data/prepared/train.csv
       hash: md5
-      md5: 125a539a81e9389ebbc9419e2d5bc452
-      size: 114112939
+      md5: f28d549e5d0ea77eaa490ffae02fd2f5
+      size: 112508857
     - path: src/train.py
       hash: md5
       md5: 9a710cbd4d1bc86a908e0998ee1313d6
@@ -47,19 +47,19 @@ stages:
     outs:
     - path: models/model.cbm
       hash: md5
-      md5: 4a09622b169cfb94549da64540292979
-      size: 11438046
+      md5: bd65471fdc88b46d6204a1f7eed33c0a
+      size: 11763354
   evaluate:
     cmd: python src/evaluate.py
     deps:
     - path: data/prepared/test.csv
       hash: md5
-      md5: bc2389fa1a28755ba0053debedca8343
-      size: 28580147
+      md5: 5dab644f55d8c1e490926bc3b1b316a6
+      size: 28179092
     - path: models/model.cbm
       hash: md5
-      md5: 4a09622b169cfb94549da64540292979
-      size: 11438046
+      md5: bd65471fdc88b46d6204a1f7eed33c0a
+      size: 11763354
     - path: src/evaluate.py
       hash: md5
       md5: d2c612fd79becdec61127372a5db8e6f
@@ -67,5 +67,5 @@ stages:
     outs:
     - path: metrics.json
       hash: md5
-      md5: 96e8b7cc704cc50249f2dc75bd839e76
+      md5: eeb4c5aab5c9053ac9930c07696d0bf3
       size: 28

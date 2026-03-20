@@ -15,9 +15,7 @@ df['title'] = df['title'].fillna('')
 df['text'] = df['text'].fillna('')
 df['full_text'] = df['title'] + " " + df['text']
 
-df['text_length'] = df['full_text'].apply(lambda x: len(x.split()))
-
-X = df[['full_text', 'text_length']]
+X = df[['full_text']]
 y = df['rating']
 
 X_train, X_test, y_train, y_test = train_test_split(
