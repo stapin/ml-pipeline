@@ -23,8 +23,9 @@ test_pool = Pool(data=X_test, label=y_test, text_features=text_cols)
 model = CatBoostClassifier(
     iterations=params['iterations'],
     learning_rate=params['learning_rate'],
-    eval_metric='RMSE',
-    task_type='CPU',              
+    eval_metric='Accuracy',
+    auto_class_weights='Balanced',
+    task_type='GPU',              
     early_stopping_rounds=params['early_stopping_rounds'],
     verbose=100                  
 )
