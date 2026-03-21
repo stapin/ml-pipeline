@@ -1,0 +1,67 @@
+pipeline {
+    agent any
+
+    environment {
+        DOCKERHUB = credentials('dockerhub-creds')
+        
+        MINIO_SECRET = credentials('minio-secret-key')
+        
+        IMAGE_NAME = "${DOCKERHUB_USR}/amazon-rating-prediction"
+        IMAGE_TAG = "pr-${env.BUILD_NUMBER}"
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Pull Model from DVC') {
+            steps {
+                sh 'pip install dvc[s3]'
+                
+                sh 'dvc remote modify --local myminio access_key_id admin_dvc'
+                sh 'dvc remote modify --local myminio secret_access_key $MINIO_SECRET'
+                
+                sh 'dvc remote modify --local myminio endpointurl http://minio:9000'
+
+                sh 'dvc pull'
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                echo "Build Image ${IMAGE_NAME}:${IMAGE_TAG}..."
+                
+                sh 'docker build -t ${IMAGE_NAME}:${IMAGE_TAG} .'
+                sh 'docker tag ${IMAGE_NAME}:${IMAGE_TAG} ${IMAGE_NAME}:latest'
+            }
+        }
+
+        stage('Push to DockerHub') {
+            steps {
+                echo "Authorization and sending to DockerHub..."
+                
+                sh 'echo $DOCKERHUB_PSW | docker login -u $DOCKERHUB_USR --password-stdin'
+                
+                sh 'docker push ${IMAGE_NAME}:${IMAGE_TAG}'
+                sh 'docker push ${IMAGE_NAME}:latest'
+            }
+        }
+    }
+
+    post {
+        always {
+            echo "Cleanup..."
+            sh 'docker rmi ${IMAGE_NAME}:${IMAGE_TAG} || true'
+            sh 'docker logout || true'
+        }
+        success {
+            echo "Pipeline done! Image in DockerHub."
+        }
+        failure {
+            echo "Pipeline failure."
+        }
+    }
+}
