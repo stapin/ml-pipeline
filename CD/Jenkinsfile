@@ -19,8 +19,17 @@ pipeline {
                 sh "docker rm -f $CONTAINER_NAME || true"
                 
                 sh "docker pull $DOCKERHUB_USR/$IMAGE_NAME:latest"
-                
-                sh "docker run -d --name $CONTAINER_NAME $DOCKERHUB_USR/$IMAGE_NAME:latest"
+
+                script {
+                    sh '''
+                        JENKINS_ID=$(hostname)
+                        docker inspect -f '{{range $k, $v := .NetworkSettings.Networks}}{{$k}}{{end}}' $JENKINS_ID > network.txt
+                    '''
+                    def JENKINS_NET = readFile('network.txt').trim()
+                    echo "🔥 Jenkins находится в сети: ${JENKINS_NET}"
+                    
+                    sh "docker run -d --name $CONTAINER_NAME --network ${JENKINS_NET} $DOCKERHUB_USR/$IMAGE_NAME:latest"
+                }
                 
                 sleep 5 
             }
