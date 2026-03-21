@@ -36,8 +36,8 @@ pipeline {
             steps {
                 echo "Build Image ${IMAGE_NAME}:${IMAGE_TAG}..."
                 
-                sh 'docker build -t ${IMAGE_NAME}:${IMAGE_TAG} .'
-                sh 'docker tag $DOCKERHUB_USR/$IMAGE_NAME:$IMAGE_TAG $DOCKERHUB_USR/$IMAGE_NAME:latest'
+                sh 'docker build -t $DOCKERHUB_USER/$IMAGE_NAME:$IMAGE_TAG .'
+                sh 'docker tag $DOCKERHUB_USER/$IMAGE_NAME:$IMAGE_TAG $DOCKERHUB_USER/$IMAGE_NAME:latest'
             }
         }
 
