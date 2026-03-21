@@ -10,7 +10,7 @@
     "scenario_name": "Negative review",
     "endpoint": "/predict",
     "method": "POST",
-    "payload": {"text": "Terrible product. Arrived broken and smells bad."},
+    "payload": {"full_text": "Terrible product. Arrived broken and smells bad."},
     "expected_status": 200
   },
   {
