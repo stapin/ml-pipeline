@@ -32,6 +32,19 @@ pipeline {
             }
         }
 
+        stage('Run Integration Tests') {
+            steps {
+                echo "Run tests..."
+                sh '''
+                    . dvc-venv/bin/activate
+                    pip install -r requirements.txt
+                    pip install pytest httpx
+                    
+                    pytest tests/
+                '''
+            }
+        }
+
         stage('Build Docker Image') {
             steps {
                 echo "Build Image ${IMAGE_NAME}:${IMAGE_TAG}..."
@@ -61,6 +74,7 @@ pipeline {
         }
         success {
             echo "Pipeline done! Image in DockerHub."
+            build job: 'amazon-rating-prediction-CD', wait: true
         }
         failure {
             echo "Pipeline failure."

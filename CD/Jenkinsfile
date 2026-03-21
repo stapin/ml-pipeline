@@ -1,0 +1,56 @@
+pipeline {
+    agent any
+
+    environment {
+        DOCKERHUB = credentials('dockerhub-creds')
+        IMAGE_NAME = "amazon-rating-prediction"
+        CONTAINER_NAME = "prediction-test-server"
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Deploy Container Locally') {
+            steps {
+                sh "docker rm -f $CONTAINER_NAME || true"
+                
+                sh "docker pull $DOCKERHUB_USR/$IMAGE_NAME:latest"
+                
+                sh "docker run -d --name $CONTAINER_NAME $DOCKERHUB_USR/$IMAGE_NAME:latest"
+                
+                sleep 5 
+            }
+        }
+
+        stage('Run Scenario Tests') {
+            steps {
+                sh "python3 -m pip install requests"
+                
+                script {
+                    def CONTAINER_IP = sh(script: "docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $CONTAINER_NAME", returnStdout: true).trim()
+                    echo "API Container IP is: ${CONTAINER_IP}"
+                    
+                    withEnv(["API_URL=http://${CONTAINER_IP}:8000"]) {
+                        sh "python3 tests/test_scenario.py"
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            sh "docker rm -f $CONTAINER_NAME || true"
+        }
+        success {
+            echo "CD pipline tests successfully done!"
+        }
+        failure {
+            echo "Tests failed!"
+        }
+    }
+}
