@@ -49,16 +49,16 @@ pipeline {
     }
 
     post {
-        always {
-            sh "docker rm -f $CONTAINER_NAME || true"
-            sh "docker logout || true"
-        }
         success {
             echo "CD pipline tests successfully done!"
         }
         failure {
             echo "Tests failed!"
             sh "docker logs $CONTAINER_NAME || true"
+        }
+        always {
+            sh "docker rm -f $CONTAINER_NAME || true"
+            sh "docker logout || true"
         }
     }
 }
