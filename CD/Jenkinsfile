@@ -40,7 +40,7 @@ pipeline {
                             
                             pip install requests
                             
-                            python3 tests/test_scenario.py
+                            python3 tests/run_scenario.py
                         '''
                     }
                 }
