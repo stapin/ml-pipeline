@@ -56,7 +56,7 @@ pipeline {
             echo "Tests failed!"
             sh "docker logs $CONTAINER_NAME || true"
         }
-        always {
+        cleanup {
             sh "docker rm -f $CONTAINER_NAME || true"
             sh "docker logout || true"
         }
