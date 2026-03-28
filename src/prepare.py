@@ -3,6 +3,7 @@ import yaml
 import os
 from sklearn.model_selection import train_test_split
 
+
 class DataPreparer:
     def __init__(self, params_path="params.yaml", input_data="data/All_Beauty.jsonl", output_dir="data/prepared"):
         self.params_path = params_path
@@ -20,23 +21,23 @@ class DataPreparer:
     def process_data(self, df):
         df = df.dropna(subset=['rating'])
         df['rating'] = df['rating'].astype(int)
-        
+
         df['title'] = df['title'].fillna('')
         df['text'] = df['text'].fillna('')
         df['full_text'] = df['title'] + " " + df['text']
-        
+
         return df[['full_text']], df['rating']
 
     def split_and_save(self, X, y):
         X_train, X_test, y_train, y_test = train_test_split(
-            X, y, 
-            test_size=self.params['test_size'], 
-            random_state=self.params['random_state'], 
-            stratify=y 
+            X, y,
+            test_size=self.params['test_size'],
+            random_state=self.params['random_state'],
+            stratify=y
         )
 
         os.makedirs(self.output_dir, exist_ok=True)
-        
+
         train_df = pd.concat([X_train, y_train], axis=1)
         test_df = pd.concat([X_test, y_test], axis=1)
 
@@ -47,6 +48,7 @@ class DataPreparer:
         df = self.load_data()
         X, y = self.process_data(df)
         self.split_and_save(X, y)
+
 
 if __name__ == "__main__":
     preparer = DataPreparer()

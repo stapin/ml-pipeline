@@ -39,14 +39,14 @@ docker compose up -d
 docker-compose -f docker-compose.infra.yml up -d
 ```
 
-### Шаг 3: Авторизация в Jenkins
+### 3. Авторизация в Jenkins
 При первом запуске Jenkins генерирует временный пароль администратора. Чтобы его узнать, выполните команду в терминале:
 ```bash
 docker exec local_jenkins cat /var/jenkins_home/secrets/initialAdminPassword
 ```
 Скопируйте полученный пароль, перейдите по адресу **`http://localhost:8080`** и вставьте его для завершения установки Jenkins.
 
-### 🔗 Шаг 4: Привязка DVC к локальному S3 (MinIO)
+### 4. Привязка DVC к локальному S3 (MinIO)
 Чтобы ваш локальный DVC мог скачивать и загружать модели в поднятый MinIO, ему нужно передать логин и пароль, которые вы задали в Шаге 1.
 
 ```bash

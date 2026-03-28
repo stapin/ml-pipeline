@@ -4,6 +4,7 @@ import numpy as np
 from catboost import CatBoostClassifier
 from sklearn.metrics import root_mean_squared_error
 
+
 class ModelEvaluator:
     def __init__(self, test_data_path="data/prepared/test.csv", model_path="models/model.cbm", metrics_path="metrics.json"):
         self.test_data_path = test_data_path
@@ -32,6 +33,7 @@ class ModelEvaluator:
         X_test, y_test = self.load_data()
         rmse = self.evaluate(X_test, y_test)
         self.save_metrics(rmse)
+
 
 if __name__ == "__main__":
     evaluator = ModelEvaluator()

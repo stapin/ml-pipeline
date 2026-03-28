@@ -3,6 +3,7 @@ import yaml
 import os
 from catboost import CatBoostClassifier, Pool
 
+
 class ModelTrainer:
     def __init__(self, params_path="params.yaml", data_dir="data/prepared", model_dir="models"):
         self.params_path = params_path
@@ -28,9 +29,9 @@ class ModelTrainer:
             learning_rate=self.params['learning_rate'],
             eval_metric='Accuracy',
             auto_class_weights='Balanced',
-            task_type='GPU',              
+            task_type='GPU',
             early_stopping_rounds=self.params['early_stopping_rounds'],
-            verbose=100                  
+            verbose=100
         )
         model.fit(train_pool, eval_set=test_pool)
         return model
@@ -42,9 +43,10 @@ class ModelTrainer:
     def run(self):
         train_pool = self._create_pool(self.train_path)
         test_pool = self._create_pool(self.test_path)
-        
+
         model = self.train_model(train_pool, test_pool)
         self.save_model(model)
+
 
 if __name__ == "__main__":
     trainer = ModelTrainer()
